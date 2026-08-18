@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>🛒 Order Management</h1>
+
+<p>Smart priority based order fulfillment</p>
+
+<div class="table-card">
+
+    <h2>Active Orders</h2>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>SKU</th>
+                    <th>Required</th>
+                    <th>Priority</th>
+                    <th>Score</th>
+                    <th>Allocated</th>
+                    <th>Shortage</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for order in orders %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ order["order_number"] }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ order["customer"] }}
+                    </td>
+
+                    <td>
+                        {{ order["sku"] }}
+                    </td>
+
+                    <td>
+                        {{ order["quantity"] }}
+                    </td>
+
+                    <td>
+
+                        {% if order["priority"] == "CRITICAL" %}
+
+                            <span class="status out">
+                                🔴 CRITICAL
+                            </span>
+
+                        {% elif order["priority"] == "HIGH" %}
+
+                            <span class="status low">
+                                🟠 HIGH
+                            </span>
+
+                        {% else %}
+
+                            <span class="status good">
+                                🟢 NORMAL
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        <strong>
+                            {{ order["priority_score"] }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ order["allocated_quantity"] }}
+                    </td>
+
+                    <td>
+                        {{ order["shortage_quantity"] }}
+                    </td>
+
+                    <td>
+                        {{ order["status"] }}
+                    </td>
+
+                    <td>
+
+                        <a href="/decision/{{ order['order_number'] }}">
+                            <button>
+                                🧠 Analyze
+                            </button>
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="10">
+                        No orders found.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

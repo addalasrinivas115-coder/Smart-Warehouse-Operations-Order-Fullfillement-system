@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>🚚 Dispatch Tracking</h1>
+
+<p class="subtitle">
+    Monitor orders ready for shipment
+</p>
+
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Ready</h3>
+        <p>17</p>
+    </div>
+
+    <div class="card">
+        <h3>Dispatched</h3>
+        <p>96</p>
+    </div>
+
+    <div class="card">
+        <h3>Delayed</h3>
+        <p>5</p>
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <h2>🚚 Dispatch Queue</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Items</th>
+                <th>Status</th>
+                <th>Dispatch</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>#1040</td>
+                <td>Customer X</td>
+                <td>Laptop × 1</td>
+                <td>
+                    <span class="status good">READY</span>
+                </td>
+                <td>
+                    <button>Dispatch</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>#1041</td>
+                <td>Customer Y</td>
+                <td>Mouse × 2</td>
+                <td>
+                    <span class="status good">READY</span>
+                </td>
+                <td>
+                    <button>Dispatch</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>#1038</td>
+                <td>Customer Z</td>
+                <td>Monitor × 1</td>
+                <td>
+                    <span class="status low">DELAYED</span>
+                </td>
+                <td>
+                    <button>Investigate</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

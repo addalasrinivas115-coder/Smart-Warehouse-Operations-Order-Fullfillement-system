@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>🧠 Smart Decision Center</h1>
+
+<p>Automated warehouse decisions and recommendations</p>
+
+<div class="alert">
+    <h2>🚨 Active Inventory Decision</h2>
+
+    <p>
+        <strong>Order #1042</strong> requires
+        <strong>10 units</strong>,
+        but only <strong>7 units</strong> are available.
+    </p>
+</div>
+
+<div class="table-card">
+
+    <h2>Recommended Action</h2>
+
+    <div class="alert">
+
+        <h3>📦 Inventory Allocation</h3>
+
+        <p>
+            Allocate <strong>7 units</strong> immediately.
+        </p>
+
+        <p>
+            Remaining shortage:
+            <strong>3 units</strong>
+        </p>
+
+    </div>
+
+    <div class="alert">
+
+        <h3>🔄 Replenishment</h3>
+
+        <p>
+            Create replenishment request for
+            <strong>3 units</strong>.
+        </p>
+
+    </div>
+
+    <div class="alert">
+
+        <h3>⏱️ Priority Decision</h3>
+
+        <p>
+            Order #1042 is marked as
+            <strong>CRITICAL</strong>.
+        </p>
+
+        <p>
+            Lower-priority orders should wait
+            until sufficient stock is available.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

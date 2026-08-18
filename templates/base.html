@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFulfill</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <h2>📦 SmartFulfill</h2>
+
+    <nav>
+
+        <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+            📊 Dashboard
+        </a>
+
+        <a href="/inventory" class="{% if request.path == '/inventory' %}active{% endif %}">
+            📦 Inventory
+        </a>
+
+        <a href="/orders" class="{% if request.path == '/orders' %}active{% endif %}">
+            🛒 Orders
+        </a>
+
+        <a href="/decisions" class="{% if request.path == '/decisions' %}active{% endif %}">
+            🧠 Smart Decisions
+        </a>
+
+        <a href="/picking" class="{% if request.path == '/picking' %}active{% endif %}">
+            👷 Picking & Packing
+        </a>
+
+        <a href="/exceptions" class="{% if request.path == '/exceptions' %}active{% endif %}">
+            ⚠️ Exceptions
+        </a>
+
+        <a href="/dispatch" class="{% if request.path == '/dispatch' %}active{% endif %}">
+            🚚 Dispatch
+        </a>
+
+        <a href="/analytics" class="{% if request.path == '/analytics' %}active{% endif %}">
+            📈 Analytics
+        </a>
+
+    </nav>
+
+</aside>
+
+
+<main class="main-content">
+
+    {% block content %}
+    {% endblock %}
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>👷 Picking & Packing</h1>
+
+<p class="subtitle">
+    Track order fulfillment workflow
+</p>
+
+
+<div class="table-card">
+
+    <h2>Orders in Warehouse</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Items</th>
+                <th>Picking</th>
+                <th>Packing</th>
+                <th>Quality Check</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>#1042</td>
+                <td>Laptop × 7</td>
+                <td>Completed</td>
+                <td>Pending</td>
+                <td>Pending</td>
+                <td>
+                    <button>Start Packing</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>#1043</td>
+                <td>Mouse × 5</td>
+                <td>In Progress</td>
+                <td>Pending</td>
+                <td>Pending</td>
+                <td>
+                    <button>Complete Picking</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>#1044</td>
+                <td>Keyboard × 3</td>
+                <td>Completed</td>
+                <td>Completed</td>
+                <td>Pending</td>
+                <td>
+                    <button>Quality Check</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

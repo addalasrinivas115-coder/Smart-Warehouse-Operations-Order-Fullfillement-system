@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>📦 Inventory Management</h1>
+
+<p>Monitor and update warehouse stock</p>
+
+<div class="table-card">
+
+<table>
+
+<thead>
+<tr>
+    <th>SKU</th>
+    <th>Product</th>
+    <th>Category</th>
+    <th>Stock</th>
+    <th>Reserved</th>
+    <th>Available</th>
+    <th>Reorder Level</th>
+    <th>Location</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for product in products %}
+
+{% set available = product["stock"] - product["reserved"] %}
+
+<tr>
+
+<form method="POST"
+      action="/update-stock/{{ product['id'] }}">
+
+<td>
+    {{ product["sku"] }}
+</td>
+
+<td>
+    <strong>{{ product["name"] }}</strong>
+</td>
+
+<td>
+    {{ product["category"] }}
+</td>
+
+<td>
+    <input
+        type="number"
+        name="stock"
+        value="{{ product['stock'] }}"
+        min="0"
+        style="width:70px;"
+    >
+</td>
+
+<td>
+    <input
+        type="number"
+        name="reserved"
+        value="{{ product['reserved'] }}"
+        min="0"
+        style="width:70px;"
+    >
+</td>
+
+<td>
+    <strong>{{ available }}</strong>
+</td>
+
+<td>
+    <input
+        type="number"
+        name="reorder_level"
+        value="{{ product['reorder_level'] }}"
+        min="0"
+        style="width:80px;"
+    >
+</td>
+
+<td>
+    {{ product["location"] }}
+</td>
+
+<td>
+
+{% if product["stock"] == 0 %}
+
+<span class="status out">
+🔴 OUT OF STOCK
+</span>
+
+{% elif available <= product["reorder_level"] %}
+
+<span class="status low">
+🟠 LOW STOCK
+</span>
+
+{% else %}
+
+<span class="status good">
+🟢 IN STOCK
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+    <button type="submit">
+        💾 Save
+    </button>
+</td>
+
+</form>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+{% endblock %}

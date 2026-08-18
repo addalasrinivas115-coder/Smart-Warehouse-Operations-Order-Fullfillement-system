@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>⚠️ Exception Management</h1>
+
+<p class="subtitle">
+    Detect, resolve and track warehouse problems
+</p>
+
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Open Exceptions</h3>
+        <p>7</p>
+    </div>
+
+    <div class="card">
+        <h3>Damaged Items</h3>
+        <p>3</p>
+    </div>
+
+    <div class="card">
+        <h3>Missing Items</h3>
+        <p>2</p>
+    </div>
+
+    <div class="card">
+        <h3>Delayed Orders</h3>
+        <p>2</p>
+    </div>
+
+</div>
+
+
+<div class="table-card">
+
+    <h2>Active Exceptions</h2>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Order</th>
+                <th>Problem</th>
+                <th>Severity</th>
+                <th>System Decision</th>
+                <th>Resolution</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>EX-001</td>
+                <td>#1042</td>
+                <td>Stock Shortage</td>
+                <td>
+                    <span class="status out">Critical</span>
+                </td>
+                <td>Trigger Replenishment</td>
+                <td>
+                    <button>Resolve</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>EX-002</td>
+                <td>#1043</td>
+                <td>Damaged Mouse</td>
+                <td>
+                    <span class="status low">Medium</span>
+                </td>
+                <td>Replace Item</td>
+                <td>
+                    <button>Resolve</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>EX-003</td>
+                <td>#1039</td>
+                <td>Missing Keyboard</td>
+                <td>
+                    <span class="status low">High</span>
+                </td>
+                <td>Inventory Re-check</td>
+                <td>
+                    <button>Resolve</button>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
