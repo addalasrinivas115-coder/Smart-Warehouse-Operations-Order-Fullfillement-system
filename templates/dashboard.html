@@ -1,85 +1,123 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>Warehouse Dashboard</h1>
-
-<p class="subtitle">
-    Smart Warehouse Operations & Order Fulfillment
-</p>
-
-
-<div class="cards">
-
-    <div class="card">
-        <h3>Total Orders</h3>
-        <p>128</p>
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Dashboard</p>
+        <h2>Warehouse performance overview</h2>
     </div>
-
-    <div class="card">
-        <h3>Pending Orders</h3>
-        <p>24</p>
-    </div>
-
-    <div class="card">
-        <h3>Low Stock</h3>
-        <p>8</p>
-    </div>
-
-    <div class="card">
-        <h3>Out of Stock</h3>
-        <p>3</p>
-    </div>
-
-    <div class="card">
-        <h3>Ready to Dispatch</h3>
-        <p>17</p>
-    </div>
-
 </div>
 
-
-<div class="section">
-
-    <h2>🚨 Active Warehouse Alerts</h2>
-
-    <div class="alert">
-        <strong>Critical Order #1042</strong>
-        <p>
-            Required: 10 units | Available: 7 units
-        </p>
-
-        <button onclick="showDecision()">
-            View Recommendation
-        </button>
+<div class="stats-grid">
+    <div class="metric-card">
+        <span>Total Products</span>
+        <strong>{{ metrics.total_products }}</strong>
     </div>
-
+    <div class="metric-card">
+        <span>Total Orders</span>
+        <strong>{{ metrics.total_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Pending Orders</span>
+        <strong>{{ metrics.pending_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Critical Orders</span>
+        <strong>{{ metrics.critical_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Low Stock Products</span>
+        <strong>{{ metrics.low_stock_products }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Out of Stock Products</span>
+        <strong>{{ metrics.out_of_stock_products }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Ready for Dispatch</span>
+        <strong>{{ metrics.ready_dispatch }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Fulfillment Rate</span>
+        <strong>{{ metrics.fulfillment_rate }}%</strong>
+    </div>
 </div>
 
+<div class="content-grid two-col">
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Recent Orders</h3>
+            <a href="/orders" class="link-button">View all</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td><strong>{{ order['order_number'] }}</strong></td>
+                    <td>{{ order['customer'] }}</td>
+                    <td><span class="status-badge {{ 'danger' if order['priority'] == 'CRITICAL' else 'warning' if order['priority'] == 'HIGH' else 'success' }}">{{ order['priority'] }}</span></td>
+                    <td>{{ order['status'] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No recent orders available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 
-<div class="section">
-
-    <h2>🧠 Today's Smart Decision</h2>
-
-    <div class="decision">
-
-        <h3>Inventory Shortage Detected</h3>
-
-        <p>
-            Order #1042 requires 10 units,
-            but only 7 units are available.
-        </p>
-
-        <p>
-            <strong>Recommended Action:</strong>
-            Allocate 7 units to the urgent order
-            and trigger replenishment for 3 units.
-        </p>
-
-    </div>
-
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Low Stock Alerts</h3>
+        </div>
+        {% for product in low_stock_products %}
+        <div class="alert-box warning">
+            <strong>{{ product['name'] }}</strong>
+            <p>Available: {{ product['stock'] - product['reserved'] }} | Reorder: {{ product['reorder_level'] }}</p>
+        </div>
+        {% else %}
+        <div class="empty-box">No low stock alerts.</div>
+        {% endfor %}
+    </section>
 </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+<div class="content-grid two-col">
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Critical Exceptions</h3>
+        </div>
+        {% for exc in open_exceptions %}
+        <div class="alert-box danger">
+            <strong>{{ exc['exception_type'] }}</strong>
+            <p>{{ exc['severity'] }} severity • {{ exc['status'] }}</p>
+        </div>
+        {% else %}
+        <div class="empty-box">No open exceptions.</div>
+        {% endfor %}
+    </section>
 
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Recent Warehouse Activities</h3>
+        </div>
+        {% for activity in recent_activities %}
+        <div class="activity-item">
+            <span class="activity-dot"></span>
+            <div>
+                <strong>{{ activity['title'] }}</strong>
+                <p>{{ activity['activity_type'] }} • {{ activity['status'] }}</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-box">No activity records.</div>
+        {% endfor %}
+    </section>
+</div>
 {% endblock %}

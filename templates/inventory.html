@@ -1,131 +1,99 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>📦 Inventory Management</h1>
-
-<p>Monitor and update warehouse stock</p>
-
-<div class="table-card">
-
-<table>
-
-<thead>
-<tr>
-    <th>SKU</th>
-    <th>Product</th>
-    <th>Category</th>
-    <th>Stock</th>
-    <th>Reserved</th>
-    <th>Available</th>
-    <th>Reorder Level</th>
-    <th>Location</th>
-    <th>Status</th>
-    <th>Action</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for product in products %}
-
-{% set available = product["stock"] - product["reserved"] %}
-
-<tr>
-
-<form method="POST"
-      action="/update-stock/{{ product['id'] }}">
-
-<td>
-    {{ product["sku"] }}
-</td>
-
-<td>
-    <strong>{{ product["name"] }}</strong>
-</td>
-
-<td>
-    {{ product["category"] }}
-</td>
-
-<td>
-    <input
-        type="number"
-        name="stock"
-        value="{{ product['stock'] }}"
-        min="0"
-        style="width:70px;"
-    >
-</td>
-
-<td>
-    <input
-        type="number"
-        name="reserved"
-        value="{{ product['reserved'] }}"
-        min="0"
-        style="width:70px;"
-    >
-</td>
-
-<td>
-    <strong>{{ available }}</strong>
-</td>
-
-<td>
-    <input
-        type="number"
-        name="reorder_level"
-        value="{{ product['reorder_level'] }}"
-        min="0"
-        style="width:80px;"
-    >
-</td>
-
-<td>
-    {{ product["location"] }}
-</td>
-
-<td>
-
-{% if product["stock"] == 0 %}
-
-<span class="status out">
-🔴 OUT OF STOCK
-</span>
-
-{% elif available <= product["reorder_level"] %}
-
-<span class="status low">
-🟠 LOW STOCK
-</span>
-
-{% else %}
-
-<span class="status good">
-🟢 IN STOCK
-</span>
-
-{% endif %}
-
-</td>
-
-<td>
-    <button type="submit">
-        💾 Save
-    </button>
-</td>
-
-</form>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Inventory</p>
+        <h2>Stock monitoring and inventory controls</h2>
+    </div>
 </div>
 
+<div class="toolbar">
+    <form class="search-form" method="get" action="/inventory">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search by name, SKU, category, location">
+        <select name="status">
+            <option value="ALL" {% if status_filter == 'ALL' %}selected{% endif %}>All statuses</option>
+            <option value="OUT OF STOCK" {% if status_filter == 'OUT OF STOCK' %}selected{% endif %}>Out of stock</option>
+            <option value="LOW STOCK" {% if status_filter == 'LOW STOCK' %}selected{% endif %}>Low stock</option>
+            <option value="IN STOCK" {% if status_filter == 'IN STOCK' %}selected{% endif %}>In stock</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+<section class="panel add-form-panel">
+    <h3>Add Product</h3>
+    <form method="post" action="/inventory/add" class="inline-form">
+        <input type="text" name="name" placeholder="Product name" required>
+        <input type="text" name="sku" placeholder="SKU" required>
+        <input type="text" name="category" placeholder="Category" required>
+        <input type="number" name="stock" min="0" value="0" required>
+        <input type="number" name="reserved" min="0" value="0" required>
+        <input type="number" name="reorder_level" min="0" value="0" required>
+        <input type="text" name="location" placeholder="Warehouse location" required>
+        <button type="submit">Add Product</button>
+    </form>
+</section>
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Inventory Ledger</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Reserved</th>
+                    <th>Available</th>
+                    <th>Reorder</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                {% set available = product['stock'] - product['reserved'] %}
+                <tr>
+                    <td>{{ product['sku'] }}</td>
+                    <td><strong>{{ product['name'] }}</strong></td>
+                    <td>{{ product['category'] }}</td>
+                    <form method="post" action="/inventory/update/{{ product['id'] }}">
+                        <td><input type="number" name="stock" min="0" value="{{ product['stock'] }}"></td>
+                        <td><input type="number" name="reserved" min="0" value="{{ product['reserved'] }}"></td>
+                        <td><strong>{{ available }}</strong></td>
+                        <td><input type="number" name="reorder_level" min="0" value="{{ product['reorder_level'] }}"></td>
+                        <td>{{ product['location'] }}</td>
+                        <td>
+                            {% if product['stock'] == 0 %}
+                            <span class="status-badge danger">OUT OF STOCK</span>
+                            {% elif available <= product['reorder_level'] %}
+                            <span class="status-badge warning">LOW STOCK</span>
+                            {% else %}
+                            <span class="status-badge success">IN STOCK</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="button-stack">
+                                <button type="submit" class="small-btn">Save</button>
+                            </div>
+                        </td>
+                    </form>
+                    <td>
+                        <form method="post" action="/inventory/delete/{{ product['id'] }}" class="inline-delete">
+                            <button type="submit" class="small-btn danger-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="10">No inventory items found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}

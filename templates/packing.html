@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Packing</p>
+        <h2>Order packing workflow</h2>
+    </div>
+</div>
+
+<section class="panel">
+    <div class="panel-header">
+        <h3>Packing Queue</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Location</th>
+                    <th>Packing Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>{{ order['order_number'] }}</strong></td>
+                    <td>{{ order['product_name'] }}</td>
+                    <td>{{ order['quantity'] }}</td>
+                    <td>{{ order['location'] or 'N/A' }}</td>
+                    <td><span class="status-badge {{ 'success' if order['packing_status'] == 'PACKED' else 'warning' if order['packing_status'] == 'PACKING' else 'neutral' }}">{{ order['packing_status'] }}</span></td>
+                    <td>
+                        <form method="post" action="/packing/update/{{ order['id'] }}" class="inline-form compact-form">
+                            <select name="status">
+                                <option value="PENDING" {% if order['packing_status'] == 'PENDING' %}selected{% endif %}>PENDING</option>
+                                <option value="PACKING" {% if order['packing_status'] == 'PACKING' %}selected{% endif %}>PACKING</option>
+                                <option value="PACKED" {% if order['packing_status'] == 'PACKED' %}selected{% endif %}>PACKED</option>
+                            </select>
+                            <button type="submit" class="small-btn">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No packing tasks available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

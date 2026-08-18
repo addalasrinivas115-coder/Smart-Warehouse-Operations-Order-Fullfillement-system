@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">System Settings</p>
+        <h2>Warehouse configuration and monitoring</h2>
+    </div>
+</div>
+
+<div class="content-grid three-col">
+    <section class="panel">
+        <h3>Operational Metrics</h3>
+        <ul class="settings-list">
+            <li>Total products: {{ metrics.total_products }}</li>
+            <li>Total orders: {{ metrics.total_orders }}</li>
+            <li>Pending orders: {{ metrics.pending_orders }}</li>
+            <li>Critical orders: {{ metrics.critical_orders }}</li>
+        </ul>
+    </section>
+
+    <section class="panel">
+        <h3>Inventory Controls</h3>
+        <ul class="settings-list">
+            <li>Low stock products: {{ metrics.low_stock_products }}</li>
+            <li>Out of stock: {{ metrics.out_of_stock_products }}</li>
+            <li>Ready for dispatch: {{ metrics.ready_dispatch }}</li>
+            <li>Fulfillment rate: {{ metrics.fulfillment_rate }}%</li>
+        </ul>
+    </section>
+
+    <section class="panel">
+        <h3>System Status</h3>
+        <ul class="settings-list">
+            <li>Inventory sync: online</li>
+            <li>Decision engine: active</li>
+            <li>Dispatch queue: monitored</li>
+            <li>Workflow alerts: enabled</li>
+        </ul>
+    </section>
+</div>
+{% endblock %}

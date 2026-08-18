@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Warehouse Chat</p>
+        <h2>Team communication and operational updates</h2>
+    </div>
+</div>
+
+<section class="panel chat-panel">
+    <div class="chat-list">
+        {% for message in messages %}
+        <div class="chat-message">
+            <div class="chat-header">
+                <strong>{{ message['sender'] }}</strong>
+                <span>{{ message['category'] }}</span>
+            </div>
+            <p>{{ message['message'] }}</p>
+            <small>{{ message['created_at'] }}</small>
+        </div>
+        {% else %}
+        <div class="empty-box">No messages yet. Start the conversation.</div>
+        {% endfor %}
+    </div>
+
+    <form method="post" action="/chat/add" class="message-form">
+        <div class="message-grid">
+            <input type="text" name="sender" placeholder="Sender" value="Warehouse Operator">
+            <select name="category">
+                <option value="URGENT">URGENT</option>
+                <option value="INVENTORY">INVENTORY</option>
+                <option value="PICKING">PICKING</option>
+                <option value="DISPATCH">DISPATCH</option>
+                <option value="GENERAL" selected>GENERAL</option>
+            </select>
+        </div>
+        <textarea name="message" rows="4" placeholder="Type your message..."></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</section>
+{% endblock %}

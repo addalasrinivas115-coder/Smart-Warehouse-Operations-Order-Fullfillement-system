@@ -1,101 +1,80 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Exceptions</p>
+        <h2>Exception tracking and resolution workflow</h2>
+    </div>
+</div>
 
-<h1>⚠️ Exception Management</h1>
+<section class="panel">
+    <div class="panel-header">
+        <h3>Add Exception</h3>
+    </div>
+    <form method="post" action="/exceptions/add" class="inline-form">
+        <input type="number" name="order_id" placeholder="Order ID">
+        <input type="text" name="product_name" placeholder="Product name">
+        <select name="exception_type">
+            <option value="Damaged item">Damaged item</option>
+            <option value="Missing item">Missing item</option>
+            <option value="Stock mismatch">Stock mismatch</option>
+            <option value="Picking issue">Picking issue</option>
+            <option value="Packing issue">Packing issue</option>
+            <option value="Delayed order">Delayed order</option>
+        </select>
+        <select name="severity">
+            <option value="CRITICAL">CRITICAL</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM" selected>MEDIUM</option>
+            <option value="LOW">LOW</option>
+        </select>
+        <input type="text" name="recommended_resolution" placeholder="Resolution recommendation">
+        <button type="submit">Create</button>
+    </form>
+</section>
 
-<p class="subtitle">
-    Detect, resolve and track warehouse problems
-</p>
-
-
-<div class="cards">
-
-    <div class="card">
+<section class="panel top-padding">
+    <div class="panel-header">
         <h3>Open Exceptions</h3>
-        <p>7</p>
     </div>
-
-    <div class="card">
-        <h3>Damaged Items</h3>
-        <p>3</p>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Exception</th>
+                    <th>Order</th>
+                    <th>Product</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Recommended Resolution</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for exc in exceptions %}
+                <tr>
+                    <td>{{ exc['exception_type'] }}</td>
+                    <td>{{ exc['order_number'] or exc['order_id'] or 'N/A' }}</td>
+                    <td>{{ exc['product_name'] or exc['order_product'] or 'N/A' }}</td>
+                    <td><span class="status-badge {{ 'danger' if exc['severity'] == 'CRITICAL' else 'warning' if exc['severity'] == 'HIGH' else 'neutral' }}">{{ exc['severity'] }}</span></td>
+                    <td>{{ exc['status'] }}</td>
+                    <td>{{ exc['recommended_resolution'] or 'Review required' }}</td>
+                    <td>
+                        {% if exc['status'] != 'RESOLVED' %}
+                        <form method="post" action="/exceptions/resolve/{{ exc['id'] }}">
+                            <button type="submit" class="small-btn">Resolve</button>
+                        </form>
+                        {% else %}
+                        <span class="status-badge success">Resolved</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7">No exceptions found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    <div class="card">
-        <h3>Missing Items</h3>
-        <p>2</p>
-    </div>
-
-    <div class="card">
-        <h3>Delayed Orders</h3>
-        <p>2</p>
-    </div>
-
-</div>
-
-
-<div class="table-card">
-
-    <h2>Active Exceptions</h2>
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Order</th>
-                <th>Problem</th>
-                <th>Severity</th>
-                <th>System Decision</th>
-                <th>Resolution</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr>
-                <td>EX-001</td>
-                <td>#1042</td>
-                <td>Stock Shortage</td>
-                <td>
-                    <span class="status out">Critical</span>
-                </td>
-                <td>Trigger Replenishment</td>
-                <td>
-                    <button>Resolve</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>EX-002</td>
-                <td>#1043</td>
-                <td>Damaged Mouse</td>
-                <td>
-                    <span class="status low">Medium</span>
-                </td>
-                <td>Replace Item</td>
-                <td>
-                    <button>Resolve</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>EX-003</td>
-                <td>#1039</td>
-                <td>Missing Keyboard</td>
-                <td>
-                    <span class="status low">High</span>
-                </td>
-                <td>Inventory Re-check</td>
-                <td>
-                    <button>Resolve</button>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
-</div>
-
+</section>
 {% endblock %}

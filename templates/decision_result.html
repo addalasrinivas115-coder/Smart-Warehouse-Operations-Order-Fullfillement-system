@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Order Decision</p>
+        <h2>{{ order['order_number'] }} Recommendation</h2>
+    </div>
+</div>
+
+<div class="decision-grid">
+    <div class="decision-card">
+        <h3>Required Quantity</h3>
+        <p><strong>{{ order['required_quantity'] }}</strong> units</p>
+    </div>
+    <div class="decision-card">
+        <h3>Available Stock</h3>
+        <p><strong>{{ order['available_stock'] }}</strong> units</p>
+    </div>
+    <div class="decision-card">
+        <h3>Allocated Quantity</h3>
+        <p><strong>{{ order['allocated_quantity'] }}</strong> units</p>
+    </div>
+    <div class="decision-card">
+        <h3>Shortage</h3>
+        <p><strong>{{ order['shortage'] }}</strong> units</p>
+    </div>
+    <div class="decision-card">
+        <h3>Priority</h3>
+        <p><strong>{{ order['priority'] }}</strong></p>
+    </div>
+    <div class="decision-card">
+        <h3>Recommended Action</h3>
+        <p>{{ order['action'] }}</p>
+    </div>
+</div>
+
+<div class="panel recommendation-panel">
+    <h3>Recommendation Summary</h3>
+    <p>{{ order['recommendation'] }}</p>
+    <p>{{ order['reason'] }}</p>
+</div>
+{% endblock %}

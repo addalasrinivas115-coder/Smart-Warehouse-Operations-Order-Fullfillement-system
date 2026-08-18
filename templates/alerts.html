@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Smart Alerts</p>
+        <h2>Operational alerts generated from live inventory and order data</h2>
+    </div>
+</div>
+
+<div class="content-grid three-col">
+    <section class="panel">
+        <h3>Low Stock</h3>
+        {% for product in low_stock %}
+        <div class="alert-box warning">
+            <strong>{{ product['name'] }}</strong>
+            <p>Available: {{ product['stock'] - product['reserved'] }} | Reorder: {{ product['reorder_level'] }}</p>
+        </div>
+        {% else %}
+        <div class="empty-box">No low stock alerts.</div>
+        {% endfor %}
+    </section>
+
+    <section class="panel">
+        <h3>Out of Stock</h3>
+        {% for product in out_of_stock %}
+        <div class="alert-box danger">
+            <strong>{{ product['name'] }}</strong>
+            <p>SKU: {{ product['sku'] }} • Location: {{ product['location'] }}</p>
+        </div>
+        {% else %}
+        <div class="empty-box">No out-of-stock alerts.</div>
+        {% endfor %}
+    </section>
+
+    <section class="panel">
+        <h3>Critical Orders</h3>
+        {% for order in critical_orders %}
+        <div class="alert-box danger">
+            <strong>{{ order['order_number'] }}</strong>
+            <p>{{ order['customer'] }} • {{ order['priority'] }}</p>
+        </div>
+        {% else %}
+        <div class="empty-box">No critical orders.</div>
+        {% endfor %}
+    </section>
+</div>
+
+<section class="panel top-padding">
+    <div class="panel-header">
+        <h3>Shortage and Delay Alerts</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Alert Type</th>
+                    <th>Detail</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in shortage_orders %}
+                <tr>
+                    <td>{{ order['order_number'] }}</td>
+                    <td>{{ order['customer'] }}</td>
+                    <td>SHORTAGE</td>
+                    <td>Required {{ order['quantity'] }}, available {{ order['available_stock'] }}</td>
+                </tr>
+                {% endfor %}
+                {% for order in delayed_orders %}
+                <tr>
+                    <td>{{ order['order_number'] }}</td>
+                    <td>{{ order['customer'] }}</td>
+                    <td>DELAYED</td>
+                    <td>Due {{ order['due_date'] }} and still {{ order['status'] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No shortage or delayed alerts.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

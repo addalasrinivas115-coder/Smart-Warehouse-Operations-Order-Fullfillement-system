@@ -1,76 +1,85 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>📈 Warehouse Analytics</h1>
-
-<p class="subtitle">
-    Operational performance and bottleneck analysis
-</p>
-
-
-<div class="cards">
-
-    <div class="card">
-        <h3>Fulfillment Rate</h3>
-        <p>94%</p>
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Analytics</p>
+        <h2>Operational KPI dashboard</h2>
     </div>
-
-    <div class="card">
-        <h3>Average Fulfillment</h3>
-        <p>2.4h</p>
-    </div>
-
-    <div class="card">
-        <h3>Stockout Rate</h3>
-        <p>3.2%</p>
-    </div>
-
-    <div class="card">
-        <h3>Delayed Orders</h3>
-        <p>10</p>
-    </div>
-
 </div>
 
-
-<div class="section">
-
-    <h2>🚨 Bottleneck Analysis</h2>
-
-    <div class="decision">
-
-        <h3>Picking is the current bottleneck</h3>
-
-        <p>
-            32% of order processing time is currently spent
-            in the picking stage.
-        </p>
-
-        <p>
-            <strong>Recommendation:</strong>
-            Assign an additional picker during peak hours.
-        </p>
-
+<div class="stats-grid">
+    <div class="metric-card">
+        <span>Total orders</span>
+        <strong>{{ metrics.total_orders }}</strong>
     </div>
-
+    <div class="metric-card">
+        <span>Completed orders</span>
+        <strong>{{ metrics.total_orders - metrics.pending_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Pending orders</span>
+        <strong>{{ metrics.pending_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Critical orders</span>
+        <strong>{{ metrics.critical_orders }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Low-stock products</span>
+        <strong>{{ metrics.low_stock_products }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Out-of-stock products</span>
+        <strong>{{ metrics.out_of_stock_products }}</strong>
+    </div>
+    <div class="metric-card">
+        <span>Fulfillment rate</span>
+        <strong>{{ metrics.fulfillment_rate }}%</strong>
+    </div>
+    <div class="metric-card">
+        <span>Ready for dispatch</span>
+        <strong>{{ metrics.ready_dispatch }}</strong>
+    </div>
 </div>
 
+<div class="content-grid two-col">
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Order status distribution</h3>
+        </div>
+        {% for item in status_counts %}
+        <div class="activity-item">
+            <div style="flex:1;">
+                <strong>{{ item['status'] }}</strong>
+                <div style="background:#e2e8f0; height:8px; border-radius:999px; margin-top:8px; overflow:hidden;">
+                    <div style="width: {{ (item['total'] / metrics.total_orders * 100) if metrics.total_orders else 0 }}%; background:#2563eb; height:100%;"></div>
+                </div>
+            </div>
+            <strong>{{ item['total'] }}</strong>
+        </div>
+        {% else %}
+        <div class="empty-box">No order status data.</div>
+        {% endfor %}
+    </section>
 
-<div class="section">
-
-    <h2>📊 Warehouse Performance</h2>
-
-    <p>Orders Completed: 120 / 128</p>
-
-    <br>
-
-    <p>On-Time Fulfillment: 94%</p>
-
-    <br>
-
-    <p>Inventory Accuracy: 97%</p>
-
+    <section class="panel">
+        <div class="panel-header">
+            <h3>Inventory status distribution</h3>
+        </div>
+        {% for item in inventory_status_counts %}
+        <div class="activity-item">
+            <div style="flex:1;">
+                <strong>{{ item['label'] }}</strong>
+                <div style="background:#e2e8f0; height:8px; border-radius:999px; margin-top:8px; overflow:hidden;">
+                    <div style="width: {{ (item['total'] / metrics.total_products * 100) if metrics.total_products else 0 }}%; background:#10b981; height:100%;"></div>
+                </div>
+            </div>
+            <strong>{{ item['total'] }}</strong>
+        </div>
+        {% else %}
+        <div class="empty-box">No inventory status data.</div>
+        {% endfor %}
+    </section>
 </div>
-
 {% endblock %}

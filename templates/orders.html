@@ -1,25 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Orders</p>
+        <h2>Priority-based fulfillment queue</h2>
+    </div>
+</div>
 
-<h1>🛒 Order Management</h1>
+<div class="toolbar">
+    <form class="search-form" method="get" action="/orders">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search orders, customer or product">
+        <select name="status">
+            <option value="ALL" {% if status_filter == 'ALL' %}selected{% endif %}>All statuses</option>
+            <option value="PENDING" {% if status_filter == 'PENDING' %}selected{% endif %}>Pending</option>
+            <option value="PICKING" {% if status_filter == 'PICKING' %}selected{% endif %}>Picking</option>
+            <option value="PACKING" {% if status_filter == 'PACKING' %}selected{% endif %}>Packing</option>
+            <option value="READY FOR DISPATCH" {% if status_filter == 'READY FOR DISPATCH' %}selected{% endif %}>Ready for dispatch</option>
+            <option value="DISPATCHED" {% if status_filter == 'DISPATCHED' %}selected{% endif %}>Dispatched</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+</div>
 
-<p>Smart priority based order fulfillment</p>
-
-<div class="table-card">
-
-    <h2>Active Orders</h2>
-
-    <div class="table-container">
-
+<section class="panel">
+    <div class="panel-header">
+        <h3>Active Orders</h3>
+    </div>
+    <div class="table-wrap">
         <table>
-
             <thead>
                 <tr>
-                    <th>Order</th>
+                    <th>Order ID</th>
                     <th>Customer</th>
-                    <th>SKU</th>
-                    <th>Required</th>
+                    <th>SKU / Product</th>
+                    <th>Qty</th>
                     <th>Priority</th>
                     <th>Score</th>
                     <th>Allocated</th>
@@ -28,101 +43,25 @@
                     <th>Action</th>
                 </tr>
             </thead>
-
             <tbody>
-
                 {% for order in orders %}
-
                 <tr>
-
-                    <td>
-                        <strong>
-                            {{ order["order_number"] }}
-                        </strong>
-                    </td>
-
-                    <td>
-                        {{ order["customer"] }}
-                    </td>
-
-                    <td>
-                        {{ order["sku"] }}
-                    </td>
-
-                    <td>
-                        {{ order["quantity"] }}
-                    </td>
-
-                    <td>
-
-                        {% if order["priority"] == "CRITICAL" %}
-
-                            <span class="status out">
-                                🔴 CRITICAL
-                            </span>
-
-                        {% elif order["priority"] == "HIGH" %}
-
-                            <span class="status low">
-                                🟠 HIGH
-                            </span>
-
-                        {% else %}
-
-                            <span class="status good">
-                                🟢 NORMAL
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                    <td>
-                        <strong>
-                            {{ order["priority_score"] }}
-                        </strong>
-                    </td>
-
-                    <td>
-                        {{ order["allocated_quantity"] }}
-                    </td>
-
-                    <td>
-                        {{ order["shortage_quantity"] }}
-                    </td>
-
-                    <td>
-                        {{ order["status"] }}
-                    </td>
-
-                    <td>
-
-                        <a href="/decision/{{ order['order_number'] }}">
-                            <button>
-                                🧠 Analyze
-                            </button>
-                        </a>
-
-                    </td>
-
+                    <td><strong>{{ order['order_number'] }}</strong></td>
+                    <td>{{ order['customer'] }}</td>
+                    <td>{{ order['sku'] }} / {{ order['product_name'] }}</td>
+                    <td>{{ order['quantity'] }}</td>
+                    <td><span class="status-badge {{ 'danger' if order['priority'] == 'CRITICAL' else 'warning' if order['priority'] == 'HIGH' else 'success' }}">{{ order['priority'] }}</span></td>
+                    <td>{{ order['priority_score'] }}</td>
+                    <td>{{ order['allocated_quantity'] }}</td>
+                    <td>{{ order['shortage_quantity'] }}</td>
+                    <td>{{ order['status'] }}</td>
+                    <td><a href="/decision/{{ order['id'] }}" class="primary-btn">Analyze</a></td>
                 </tr>
-
                 {% else %}
-
-                <tr>
-                    <td colspan="10">
-                        No orders found.
-                    </td>
-                </tr>
-
+                <tr><td colspan="10">No orders found.</td></tr>
                 {% endfor %}
-
             </tbody>
-
         </table>
-
     </div>
-
-</div>
-
+</section>
 {% endblock %}

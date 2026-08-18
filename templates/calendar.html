@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Operations Calendar</p>
+        <h2>Warehouse schedule and critical activity timeline</h2>
+    </div>
+</div>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Activity</th>
+                    <th>Order</th>
+                    <th>Product</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in activities %}
+                <tr>
+                    <td>{{ activity['time'] }}</td>
+                    <td>{{ activity['type'] }}</td>
+                    <td>{{ activity['order_id'] or 'N/A' }}</td>
+                    <td>{{ activity['product_name'] or 'General' }}</td>
+                    <td><span class="status-badge {{ 'success' if activity['status'] == 'ACTIVE' else 'warning' if activity['status'] == 'SCHEDULED' else 'neutral' }}">{{ activity['status'] }}</span></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No operations scheduled.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

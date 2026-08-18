@@ -1,70 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<h1>👷 Picking & Packing</h1>
-
-<p class="subtitle">
-    Track order fulfillment workflow
-</p>
-
-
-<div class="table-card">
-
-    <h2>Orders in Warehouse</h2>
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>Order</th>
-                <th>Items</th>
-                <th>Picking</th>
-                <th>Packing</th>
-                <th>Quality Check</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-            <tr>
-                <td>#1042</td>
-                <td>Laptop × 7</td>
-                <td>Completed</td>
-                <td>Pending</td>
-                <td>Pending</td>
-                <td>
-                    <button>Start Packing</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>#1043</td>
-                <td>Mouse × 5</td>
-                <td>In Progress</td>
-                <td>Pending</td>
-                <td>Pending</td>
-                <td>
-                    <button>Complete Picking</button>
-                </td>
-            </tr>
-
-            <tr>
-                <td>#1044</td>
-                <td>Keyboard × 3</td>
-                <td>Completed</td>
-                <td>Completed</td>
-                <td>Pending</td>
-                <td>
-                    <button>Quality Check</button>
-                </td>
-            </tr>
-
-        </tbody>
-
-    </table>
-
+<div class="page-header">
+    <div>
+        <p class="eyebrow">Picking</p>
+        <h2>Orders ready for warehouse picking</h2>
+    </div>
 </div>
 
+<section class="panel">
+    <div class="panel-header">
+        <h3>Picking Queue</h3>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Location</th>
+                    <th>Priority</th>
+                    <th>Picking Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td><strong>{{ order['order_number'] }}</strong></td>
+                    <td>{{ order['sku'] }}</td>
+                    <td>{{ order['quantity'] }}</td>
+                    <td>{{ order['location'] or 'N/A' }}</td>
+                    <td><span class="status-badge {{ 'danger' if order['priority'] == 'CRITICAL' else 'warning' if order['priority'] == 'HIGH' else 'success' }}">{{ order['priority'] }}</span></td>
+                    <td><span class="status-badge {{ 'success' if order['picking_status'] == 'PICKED' else 'warning' if order['picking_status'] == 'PICKING' else 'neutral' }}">{{ order['picking_status'] }}</span></td>
+                    <td>
+                        <form method="post" action="/picking/update/{{ order['id'] }}" class="inline-form compact-form">
+                            <select name="status">
+                                <option value="PENDING" {% if order['picking_status'] == 'PENDING' %}selected{% endif %}>PENDING</option>
+                                <option value="PICKING" {% if order['picking_status'] == 'PICKING' %}selected{% endif %}>PICKING</option>
+                                <option value="PICKED" {% if order['picking_status'] == 'PICKED' %}selected{% endif %}>PICKED</option>
+                            </select>
+                            <button type="submit" class="small-btn">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7">No orders available for picking.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
 {% endblock %}
