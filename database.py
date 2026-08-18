@@ -1,7 +1,23 @@
+import os
 import sqlite3
 from datetime import datetime, timedelta
 
-DATABASE = "warehouse.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def get_database_path():
+    override = os.environ.get('WAREHOUSE_DB_PATH')
+    if override:
+        return override
+    local_path = os.path.join(BASE_DIR, 'warehouse.db')
+    if os.access(BASE_DIR, os.W_OK):
+        return local_path
+    temp_path = '/tmp/warehouse.db'
+    os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+    return temp_path
+
+
+DATABASE = get_database_path()
 
 
 def get_db():
